@@ -3,6 +3,9 @@ class PaperVerificationApp {
     constructor() {
         this.apiBase = window.location.origin;
         this.currentResults = [];
+        this.totalReferences = 0;
+        this.processedReferences = 0;
+        this.progressInterval = null;
         this.init();
     }
 
@@ -37,14 +40,6 @@ class PaperVerificationApp {
         }
 
         // 文件上传
-        const uploadBtn = document.getElementById('uploadBtn');
-        if (uploadBtn) {
-            uploadBtn.addEventListener('click', () => {
-                console.log('🖱️ 点击上传按钮');
-                document.getElementById('fileInput').click();
-            });
-        }
-
         const fileInput = document.getElementById('fileInput');
         if (fileInput) {
             fileInput.addEventListener('change', (e) => {
@@ -73,10 +68,28 @@ class PaperVerificationApp {
             });
         }
 
+        // 加载弹窗背景点击关闭（可选）
+        const loadingModal = document.getElementById('loadingModal');
+        if (loadingModal) {
+            loadingModal.addEventListener('click', (e) => {
+                if (e.target.id === 'loadingModal') {
+                    console.log('🖱️ 点击加载弹窗背景');
+                    // 可以选择不允许关闭，或者允许关闭
+                    // this.hideLoadingModal();
+                }
+            });
+        }
+
         // 键盘事件
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                this.hideModal();
+                if (!document.getElementById('loadingModal').classList.contains('hidden')) {
+                    console.log('ESC键: 尝试关闭加载弹窗');
+                    // 可以选择不允许ESC关闭加载弹窗
+                    // this.hideLoadingModal();
+                } else {
+                    this.hideModal();
+                }
             }
         });
 
@@ -106,8 +119,51 @@ class PaperVerificationApp {
         document.body.appendChild(announcement);
 
         setTimeout(() => {
-            document.body.removeChild(announcement);
+            if (announcement.parentNode) {
+                announcement.parentNode.removeChild(announcement);
+            }
         }, 1000);
+    }
+
+    // 加载弹窗控制方法
+    showLoadingModal(message = '正在验证中...', details = '') {
+        const loadingModal = document.getElementById('loadingModal');
+        const loadingProgress = document.getElementById('loadingProgress');
+        const loadingDetails = document.getElementById('loadingDetails');
+
+        if (loadingProgress) loadingProgress.textContent = message;
+        if (loadingDetails) loadingDetails.textContent = details;
+        if (loadingModal) {
+            loadingModal.classList.remove('hidden');
+            loadingModal.style.zIndex = '1000';
+        }
+
+        console.log('📱 显示加载弹窗:', message);
+    }
+
+    hideLoadingModal() {
+        const loadingModal = document.getElementById('loadingModal');
+        if (loadingModal) {
+            loadingModal.classList.add('hidden');
+        }
+
+        // 清除进度模拟
+        if (this.progressInterval) {
+            clearInterval(this.progressInterval);
+            this.progressInterval = null;
+        }
+
+        console.log('📱 隐藏加载弹窗');
+    }
+
+    updateLoadingProgress(message, details = '') {
+        const loadingProgress = document.getElementById('loadingProgress');
+        const loadingDetails = document.getElementById('loadingDetails');
+
+        if (loadingProgress) loadingProgress.textContent = message;
+        if (loadingDetails) loadingDetails.textContent = details;
+
+        console.log('📊 更新加载进度:', message, details);
     }
 
     async checkBackendStatus() {
@@ -162,13 +218,35 @@ class PaperVerificationApp {
         this.showProgress();
         this.resetResults();
 
+        // 显示加载弹窗
+        this.showLoadingModal(
+            '开始验证参考文献...',
+            `共 ${references.length} 条文献需要验证`
+        );
+
         try {
             console.log('🚀 开始批量验证...');
+
+            // 更新进度信息
+            this.updateLoadingProgress(
+                '正在连接验证服务...',
+                '初始化多智能体验证系统'
+            );
+
+            // 开始模拟进度
+            this.startProgressSimulation(references.length);
+
             const result = await this.verifyBatch(references);
             console.log('✅ 批量验证完成:', result);
+
+            // 验证完成，隐藏弹窗
+            this.hideLoadingModal();
             this.displayResults(result);
+
         } catch (error) {
             console.error('❌ 验证过程出错:', error);
+            // 出错时也要隐藏弹窗
+            this.hideLoadingModal();
             this.showNotification('验证过程出错: ' + error.message, 'error');
         } finally {
             this.setLoadingState(false);
@@ -185,6 +263,9 @@ class PaperVerificationApp {
     async verifyBatch(references) {
         console.log('📤 发送批量验证请求到 /api/verify-batch');
         console.log('📦 请求数据:', { references });
+
+        this.totalReferences = references.length;
+        this.processedReferences = 0;
 
         try {
             const response = await fetch('/api/verify-batch', {
@@ -220,15 +301,56 @@ class PaperVerificationApp {
         }
     }
 
+    // 进度模拟方法
+    startProgressSimulation(total) {
+        let current = 0;
+        const maxProgress = 90; // 最大模拟到90%，等待真实结果
+
+        // 清除之前的间隔
+        if (this.progressInterval) {
+            clearInterval(this.progressInterval);
+        }
+
+        this.progressInterval = setInterval(() => {
+            if (current < maxProgress) {
+                current += Math.floor(Math.random() * 5) + 1;
+                if (current > maxProgress) current = maxProgress;
+
+                const progressMessage = this.getRandomProgressMessage();
+                this.updateProgress(current, 100, progressMessage);
+                this.updateLoadingProgress(
+                    progressMessage,
+                    `进度: ${current}% - 正在处理第 ${Math.floor(current / 100 * total)} 条文献`
+                );
+            }
+        }, 800);
+    }
+
+    getRandomProgressMessage() {
+        const messages = [
+            '正在解析文献格式...',
+            '查询学术数据库...',
+            '验证作者信息...',
+            '检查期刊真实性...',
+            '分析引用关系...',
+            '交叉验证数据源...',
+            '生成验证报告...',
+            '智能分析文献内容...',
+            '比对权威数据源...',
+            '评估文献可信度...'
+        ];
+        return messages[Math.floor(Math.random() * messages.length)];
+    }
+
     updateProgress(current, total, message) {
         const progressFill = document.getElementById('progressFill');
         const progressText = document.getElementById('progressText');
         const progressCount = document.getElementById('progressCount');
 
         const percentage = total > 0 ? (current / total) * 100 : 0;
-        progressFill.style.width = `${percentage}%`;
-        progressText.textContent = message || `处理中...`;
-        progressCount.textContent = `${current}/${total}`;
+        if (progressFill) progressFill.style.width = `${percentage}%`;
+        if (progressText) progressText.textContent = message || `处理中...`;
+        if (progressCount) progressCount.textContent = `${current}/${total}`;
 
         this.updateProgressBarAria(current, total);
 
@@ -249,6 +371,9 @@ class PaperVerificationApp {
         this.updateSummary(data.results);
         this.renderResultsTable(data.results);
         this.showResults();
+
+        // 更新最终进度为100%
+        this.updateProgress(100, 100, '验证完成');
 
         const realCount = data.results.filter(r => r.is_real === true).length;
         const totalCount = data.results.length;
@@ -536,8 +661,10 @@ class PaperVerificationApp {
 
     setLoadingState(loading) {
         const verifyBtn = document.getElementById('verifyBtn');
-        verifyBtn.disabled = loading;
-        verifyBtn.textContent = loading ? '验证中...' : '开始验证';
+        if (verifyBtn) {
+            verifyBtn.disabled = loading;
+            verifyBtn.textContent = loading ? '验证中...' : '开始验证';
+        }
 
         if (loading) {
             document.body.classList.add('loading');
@@ -549,19 +676,28 @@ class PaperVerificationApp {
     }
 
     showProgress() {
-        document.getElementById('progressSection').classList.remove('hidden');
+        const progressSection = document.getElementById('progressSection');
+        if (progressSection) {
+            progressSection.classList.remove('hidden');
+        }
         this.updateProgress(0, 1, '准备开始验证...');
         console.log('📊 显示进度条');
     }
 
     showResults() {
-        document.getElementById('resultsSection').classList.remove('hidden');
+        const resultsSection = document.getElementById('resultsSection');
+        if (resultsSection) {
+            resultsSection.classList.remove('hidden');
+        }
         console.log('📋 显示结果区域');
     }
 
     resetResults() {
         this.currentResults = [];
-        document.getElementById('resultsBody').innerHTML = '';
+        const resultsBody = document.getElementById('resultsBody');
+        if (resultsBody) {
+            resultsBody.innerHTML = '';
+        }
         document.getElementById('realCount').textContent = '0';
         document.getElementById('questionableCount').textContent = '0';
         document.getElementById('fakeCount').textContent = '0';
