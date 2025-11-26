@@ -59,9 +59,9 @@ playwright install
 在项目根目录下的 `.env` 文件中，设置必要的 API 密钥：
 
 ```
-# DeepSeek API 配置
-OPENAI_API_KEY='sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-OPENAI_API_BASE='https://api.deepseek.com/v1'
+# DeepSeek API 配置更换成了免费的GLM-4-Flash-250414模型
+OPENAI_API_KEY='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+OPENAI_API_BASE='https://open.bigmodel.cn/api/paas/v4' # 'https://api.deepseek.com/v1'
 
 # Semantic Scholar API (推荐配置)
 SEMANTIC_SCHOLAR_API_KEY='your_semantic_scholar_api_key'
