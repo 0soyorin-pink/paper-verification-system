@@ -17,7 +17,7 @@ class ParserAgent:
             "注意：请确保准确提取标题、作者、年份等关键信息。"
         )
 
-    def parse(self, user_input: str) -> dict:
+    async def parse(self, user_input: str) -> dict:
         """
         解析用户输入，支持多种文献引用格式
         """
@@ -31,7 +31,7 @@ class ParserAgent:
         
         # 规则解析失败，使用LLM进行智能解析
         print("🔍 规则解析不明确，使用LLM进行智能解析...")
-        return self._llm_parse(user_input)
+        return await self._llm_parse(user_input)
 
     def _quick_parse(self, user_input: str) -> dict:
         """
@@ -108,7 +108,7 @@ class ParserAgent:
         
         return {"type": "unknown", "title": text, "authors": "", "year": "", "journal": "", "details": "规则解析失败"}
 
-    def _llm_parse(self, user_input: str) -> dict:
+    async def _llm_parse(self, user_input: str) -> dict:
         """
         使用LLM进行智能解析
         """
@@ -122,7 +122,7 @@ class ParserAgent:
             f"4. 如果是专利，类型设为'patent'"
         )
         
-        json_result = self.llm_client.chat_completion(
+        json_result = await self.llm_client.chat_completion(
             system_prompt=self.system_prompt,
             user_prompt=user_prompt,
             json_mode=True
@@ -130,27 +130,30 @@ class ParserAgent:
         
         if json_result:
             try:
+                # 先解析 JSON 字符串为字典
+                result_data = json.loads(json_result)
+                
                 # 验证必要字段
-                if not json_result.get("title"):
-                    json_result["title"] = user_input
+                if not result_data.get("title"):
+                    result_data["title"] = user_input
                 
                 # 清理作者格式
-                if json_result.get("authors"):
-                    authors = json_result["authors"]
+                if result_data.get("authors"):
+                    authors = result_data["authors"]
                     if isinstance(authors, list):
-                        json_result["authors"] = ", ".join(authors)
+                        result_data["authors"] = ", ".join(authors)
                     elif isinstance(authors, str) and "[" in authors and "]" in authors:
                         # 处理可能的列表字符串格式
                         import ast
                         try:
                             authors_list = ast.literal_eval(authors)
                             if isinstance(authors_list, list):
-                                json_result["authors"] = ", ".join(authors_list)
+                                result_data["authors"] = ", ".join(authors_list)
                         except:
                             pass
                 
-                print(f"--- ParserAgent: 解析结果: {json_result} ---")
-                return json_result
+                print(f"--- ParserAgent: 解析结果: {result_data} ---")
+                return result_data
                 
             except Exception as e:
                 print(f"ParserAgent: 解析 LLM 输出失败: {e}")

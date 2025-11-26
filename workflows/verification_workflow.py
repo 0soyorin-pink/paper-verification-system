@@ -19,8 +19,8 @@ class VerificationWorkflow:
         print(f"--- 启动验证工作流 ---")
         print("==================================================")
 
-        # 1. 解析输入（增强版：支持文献引用格式）
-        parsed_data = self.parser_agent.parse(user_input)
+        # 1. 解析输入（增强版：支持文献引用格式）- 添加 await
+        parsed_data = await self.parser_agent.parse(user_input)
         
         task_type = parsed_data.get("type")
         title = parsed_data.get("title", "")

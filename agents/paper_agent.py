@@ -78,29 +78,50 @@ class PaperAgent:
             f"请综合考虑标题相似度、作者匹配、年份一致性和期刊信息进行判断。"
         )
         
-        json_result = self.llm_client.chat_completion(
+        json_result = await self.llm_client.chat_completion(
             system_prompt=self.system_prompt,
             user_prompt=user_prompt,
             json_mode=True
         )
         
         if json_result:
-            # 补充信息：如果LLM未能提取某些字段，从最佳候选结果中补充
-            if best_candidate:
-                json_result["title"] = json_result.get("title") or best_candidate.get("title", "")
-                json_result["link"] = json_result.get("link") or best_candidate.get("link", "") or best_candidate.get("url", "")
-                json_result["authors"] = json_result.get("authors") or best_candidate.get("authors", "")
-                json_result["published_date"] = json_result.get("published_date") or str(best_candidate.get("year", ""))
-                # 添加置信度
-                if "confidence" not in json_result:
-                    json_result["confidence"] = best_candidate.get("confidence") or best_candidate.get("match_score", 0)
-                
             try:
-                print(f"--- PaperAgent: 验证结果: {json_result} ---")
-                return json_result
+                # 先解析 JSON 字符串为字典
+                result_data = json.loads(json_result)
+                
+                # 补充信息：如果LLM未能提取某些字段，从最佳候选结果中补充
+                if best_candidate:
+                    result_data["title"] = result_data.get("title") or best_candidate.get("title", "")
+                    result_data["link"] = result_data.get("link") or best_candidate.get("link", "") or best_candidate.get("url", "")
+                    result_data["authors"] = result_data.get("authors") or best_candidate.get("authors", "")
+                    result_data["published_date"] = result_data.get("published_date") or str(best_candidate.get("year", ""))
+                    # 添加置信度
+                    if "confidence" not in result_data:
+                        result_data["confidence"] = best_candidate.get("confidence") or best_candidate.get("match_score", 0)
+                
+                print(f"--- PaperAgent: 验证结果: {result_data} ---")
+                return result_data
+                
+            except json.JSONDecodeError as e:
+                print(f"PaperAgent: JSON 解析失败: {e}, 原始响应: {json_result}")
+                # 如果 JSON 解析失败，创建默认结果
+                fallback_result = {
+                    "is_real": False, 
+                    "confidence": 0.0,
+                    "source": "解析错误",
+                    "reason": f"LLM 响应格式错误: {str(e)}"
+                }
+                if best_candidate:
+                    fallback_result.update({
+                        "title": best_candidate.get("title", ""),
+                        "authors": best_candidate.get("authors", ""),
+                        "published_date": str(best_candidate.get("year", "")),
+                        "link": best_candidate.get("link", "") or best_candidate.get("url", "")
+                    })
+                return fallback_result
             except Exception as e:
-                print(f"PaperAgent: 解析 LLM 输出失败: {e}")
-                return {"is_real": False, "source": "验证过程出错", "reason": "LLM 输出格式错误", "confidence": 0.0}
+                print(f"PaperAgent: 处理 LLM 输出失败: {e}")
+                return {"is_real": False, "source": "验证过程出错", "reason": f"处理失败: {str(e)}", "confidence": 0.0}
         
         return {"is_real": False, "source": "验证失败", "reason": "LLM 调用失败", "confidence": 0.0}
 
