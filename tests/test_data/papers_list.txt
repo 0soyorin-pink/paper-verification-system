@@ -1,0 +1,60 @@
+基于傅里叶变换光学系统的动态多光束干涉光刻
+过渡金属碳化物电催化析氢性能及调控的第一性原理研究
+氪的电子碰撞谱学研究及带状电子枪的研制
+再谈半波损失和薄膜干涉
+从法拉第电磁感应定律到麦克斯韦方程
+管式质子陶瓷电池与电极材料的制备及其性能研究
+低空经济政策法律体系的现状、经验与展望
+基于LSTM循环神经网络的故障时间序列预测
+低空经济助推新质生产力的运行机理与路径选择
+低空经济赋能中国式现代化的内在机理与实践进路
+“双碳”背景下船舶制造企业审计风险研究 ——以大信审计天海防务为例
+国内外无人船发展现状及研发趋势
+磁约束可控核聚变装置的磁体系统综述
+钠冷快堆技术发展综述
+核能综合利用的理论现状及发展前景探讨
+英成功制造全球首个碳-14钻石电池
+数实产业技术融合与企业全要素生产率——基于中国企业专利信息的研究
+层次分析法权重计算方法分析及其应用研究
+事件研究法的实现、问题和拓展
+给宝宝一份安心的“出生计划”——无创产前检测与流产后的科学再生育指导
+基于杜邦分析法的企业盈利能力分析——以中国铁建股份有限公司为例
+城市化进程中大气污染的环境影响评价分析
+基于单片机自动窗帘控制系统的设计
+基于TLR4/PI3K/Akt信号通路探讨补肺活血胶囊用于慢性阻塞性肺疾病稳定期治疗的作用机制
+基于CAC范式的ChatGPT用户持续使用意愿影响因素研究
+基于质量标志物对亳白芍采收加工过程的质量评价研究
+基于cAMP/PKA/AQP1信号通路探讨养阴补肺方止咳、平喘、祛痰的作用及机制研究
+基于卷积和循环神经网络融合的自动调制分类方法
+脉冲神经网络的深度学习方法研究
+量子神经网络可解释性方法及模型的设计优化
+Silencing of mitochondrial gene expression using polymorpholino chimeras.
+Deep Reinforcement Learning for Multiagent Systems: A Review of Challenges, Solutions, and Applications
+Multi-agent deep reinforcement learning: a survey
+Hate Speech Detection in Limited Data Contexts Using Synthetic Data Generation
+Beyond Digital Financial Services: Exploring Mobile Money Agents in Tanzania as General ICT Intermediaries
+To Reply or to Quote: Comparing Conversational Framing Strategies on Twitter
+A First Look into Software Security Practices in Bangladesh
+How Viable are Energy Savings in Smart Homes? A Call to Embrace Rebound Effects in Sustainable HCI
+Flamingo: Environmental Impact Factor Matching for Life Cycle Assessment with Zero-shot Machine Learning
+Exploring the Barriers and Potential Opportunities of Technology Integration in Community-Based Social Service Organizations
+The Last Mile in Remote Sensing Poverty Prediction
+Exploring AI in Education: Child-Computer Interaction in the Global South
+Collective intelligence for deep learning: A survey of recent developments
+The wisdom of crowds versus the madness of mobs: An evolutionary model of bias, polarization, and other challenges to collective intelligence
+Partial copying and the role of diversity in social learning performance
+Collective intelligence as a public good
+the paper title is GeJuSTA Gender Analysis and Gender-Just Co-Design Toolkits
+Perspectives of Parents and Healthcare Professionals on Using Chatbots to Support Parents in Child Health: A Qualitative Study
+Dynamic mapping of human cortical development during childhood through early adulthood
+The Rhesus Monkey Brain in Stereotaxic Coordinates
+Chapter 7 - Hemispheric asymmetry in neurodegenerative diseases
+SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering
+The Surprising Effectiveness of PPO in Cooperative Multi-Agent Games
+Multi-agent, human–agent and beyond: a survey on cooperation in social dilemmas
+MetaGPT: Meta Programming for Multi-Agent Collaborative Framework
+Mind2Web: Towards a Generalist Agent for the Web
+Mobile-Agent: Autonomous Multi-Modal Mobile Device Agent with Visual Perception
+Agent Hospital: A Simulacrum of Hospital with Evolvable Medical Agents
+Consensus and Cooperation in Networked Multi-Agent Systems
+Partially Observable Markov Decision Processes and Robotics

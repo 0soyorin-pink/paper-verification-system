@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>论文真实性验证系统</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 论文真实性验证系统</h1>
+            <p>基于多智能体架构的学术文献验证工具</p>
+        </header>
+
+        <main>
+            <!-- 输入区域 -->
+            <section class="input-section">
+                <h2>输入参考文献</h2>
+                <div class="input-container">
+                    <label for="referencesInput" class="sr-only">参考文献输入框</label>
+                    <textarea id="referencesInput" placeholder="请粘贴参考文献列表，每行一条引用格式：
+• 作者. 标题[J]. 期刊, 年份
+• Author, A. (Year). Title. Journal.
+• 专利号: CN123456
+支持多种引用格式自动解析..." rows="10" aria-describedby="inputHelpText"></textarea>
+                    <div id="inputHelpText" class="help-text">
+                        支持多种引用格式，每行输入一条参考文献
+                    </div>
+
+                    <div class="input-actions">
+                        <button id="verifyBtn" class="btn-primary" aria-label="开始验证参考文献">
+                            开始验证
+                        </button>
+                        <button id="clearBtn" class="btn-secondary" aria-label="清空输入内容">
+                            清空
+                        </button>
+                        <div class="file-upload">
+                            <label for="fileInput" class="file-input-label">
+                                <span>上传文件</span>
+                                <input type="file" id="fileInput" class="file-input-hidden" accept=".txt,.bib"
+                                    aria-describedby="fileHelpText">
+                            </label>
+                            <div id="fileHelpText" class="help-text">
+                                支持 .txt 和 .bib 格式文件
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 进度显示 -->
+            <section id="progressSection" class="progress-section hidden" aria-live="polite" aria-atomic="true">
+                <h3>验证进度</h3>
+                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="progressText">准备开始...</span>
+                    <span id="progressCount">0/0</span>
+                </div>
+            </section>
+
+            <!-- 结果展示 -->
+            <section id="resultsSection" class="results-section hidden" aria-live="polite">
+                <h2>验证结果</h2>
+
+                <div class="results-summary" role="status" aria-live="polite">
+                    <div class="summary-item real" aria-label="真实文献数量">
+                        <span class="count" id="realCount">0</span>
+                        <span class="label">真实</span>
+                    </div>
+                    <div class="summary-item questionable" aria-label="存疑文献数量">
+                        <span class="count" id="questionableCount">0</span>
+                        <span class="label">存疑</span>
+                    </div>
+                    <div class="summary-item fake" aria-label="未验证文献数量">
+                        <span class="count" id="fakeCount">0</span>
+                        <span class="label">未验证</span>
+                    </div>
+                    <div class="summary-item total" aria-label="总文献数量">
+                        <span class="count" id="totalCount">0</span>
+                        <span class="label">总计</span>
+                    </div>
+                </div>
+
+                <div class="results-table-container">
+                    <table id="resultsTable" class="results-table" aria-label="文献验证结果表格">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="col-status">状态</th>
+                                <th scope="col" class="col-title">标题</th>
+                                <th scope="col" class="col-type">类型</th>
+                                <th scope="col" class="col-confidence">置信度</th>
+                                <th scope="col" class="col-source">来源</th>
+                                <th scope="col" class="col-actions">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsBody">
+                            <!-- 结果将通过JavaScript动态添加 -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+        <!-- 详情模态框 -->
+        <div id="detailModal" class="modal hidden" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">详细验证信息</h3>
+                    <button id="closeModal" class="close-btn" aria-label="关闭详情窗口">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="modalContent">
+                        <!-- 详情内容将通过JavaScript动态填充 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Powered by Multi-Agent Verification System | 基于语义理解和权威数据源</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
