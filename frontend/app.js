@@ -539,60 +539,103 @@ class PaperVerificationApp {
     }
 
     generateDetailContent(result) {
-        return `
+        console.log('🔍 详细模态框接收的数据:', result);
+
+        // 正确访问嵌套字段
+        const rawData = result.details?.raw_data || {};
+        const parsedData = result.details?.parsed_data || {};
+
+        console.log('🔗 raw_data 实际内容:', rawData);
+        console.log('📝 parsed_data 实际内容:', parsedData);
+
+        // 从正确的位置获取字段
+        const paperLink = rawData.link || result.link;
+        const paperYear = parsedData.year || rawData.published_date || result.published_date;
+        const paperAuthors = rawData.authors || result.authors;
+
+        console.log('✅ 链接:', paperLink);
+        console.log('✅ 年份:', paperYear);
+        console.log('✅ 作者:', paperAuthors);
+        console.log('✅ 直接字段 - link:', result.link, 'published_date:', result.published_date);
+
+        // 构建来源链接HTML
+        let sourceLinkHTML = '';
+        if (paperLink) {
+            sourceLinkHTML = `
             <div class="detail-item">
-                <div class="detail-label">原始引用</div>
-                <div class="detail-value">${this.escapeHtml(result.reference)}</div>
+                <div class="detail-label">来源链接</div>
+                <div class="detail-value">
+                    <a href="${this.escapeHtml(paperLink)}" target="_blank" rel="noopener noreferrer" class="source-link">
+                        ${this.escapeHtml(paperLink)}
+                    </a>
+                </div>
             </div>
-            
-            <div class="detail-item">
-                <div class="detail-label">解析类型</div>
-                <div class="detail-value">${this.formatType(result.type)}</div>
-            </div>
-            
-            <div class="detail-item">
-                <div class="detail-label">验证状态</div>
-                <div class="detail-value">${this.getStatusText(result)}</div>
-            </div>
-            
-            <div class="detail-item">
-                <div class="detail-label">置信度</div>
-                <div class="detail-value">${((result.confidence || 0) * 100).toFixed(1)}%</div>
-            </div>
-            
-            <div class="detail-item">
-                <div class="detail-label">数据来源</div>
-                <div class="detail-value">${result.source || '未知'}</div>
-            </div>
-            
-            ${result.title ? `
-            <div class="detail-item">
-                <div class="detail-label">识别标题</div>
-                <div class="detail-value">${this.escapeHtml(result.title)}</div>
-            </div>
-            ` : ''}
-            
-            ${result.authors ? `
-            <div class="detail-item">
-                <div class="detail-label">作者信息</div>
-                <div class="detail-value">${this.escapeHtml(result.authors)}</div>
-            </div>
-            ` : ''}
-            
-            ${result.reason ? `
-            <div class="detail-item">
-                <div class="detail-label">判断理由</div>
-                <div class="detail-value">${this.escapeHtml(result.reason)}</div>
-            </div>
-            ` : ''}
-            
-            ${result.error ? `
-            <div class="detail-item">
-                <div class="detail-label">错误信息</div>
-                <div class="detail-value" style="color: #e74c3c;">${this.escapeHtml(result.reason || '未知错误')}</div>
-            </div>
-            ` : ''}
         `;
+        } else {
+            sourceLinkHTML = `
+            <div class="detail-item">
+                <div class="detail-label">来源链接</div>
+                <div class="detail-value" style="color: #999;">暂无可用链接</div>
+            </div>
+        `;
+        }
+
+        return `
+        <div class="detail-item">
+            <div class="detail-label">原始引用</div>
+            <div class="detail-value">${this.escapeHtml(result.reference)}</div>
+        </div>
+        
+        <div class="detail-item">
+            <div class="detail-label">解析类型</div>
+            <div class="detail-value">${this.formatType(result.type)}</div>
+        </div>
+        
+        <div class="detail-item">
+            <div class="detail-label">验证状态</div>
+            <div class="detail-value">${this.getStatusText(result)}</div>
+        </div>
+        
+        <div class="detail-item">
+            <div class="detail-label">置信度</div>
+            <div class="detail-value">${((result.confidence || 0) * 100).toFixed(1)}%</div>
+        </div>
+        
+        <div class="detail-item">
+            <div class="detail-label">数据来源</div>
+            <div class="detail-value">${result.source || '未知'}</div>
+        </div>
+        
+        ${sourceLinkHTML}
+        
+        ${paperYear ? `
+        <div class="detail-item">
+            <div class="detail-label">发表年份</div>
+            <div class="detail-value">${this.escapeHtml(paperYear)}</div>
+        </div>
+        ` : ''}
+        
+        ${result.title ? `
+        <div class="detail-item">
+            <div class="detail-label">识别标题</div>
+            <div class="detail-value">${this.escapeHtml(result.title)}</div>
+        </div>
+        ` : ''}
+        
+        ${paperAuthors ? `
+        <div class="detail-item">
+            <div class="detail-label">作者信息</div>
+            <div class="detail-value">${this.escapeHtml(paperAuthors)}</div>
+        </div>
+        ` : ''}
+        
+        ${result.reason ? `
+        <div class="detail-item">
+            <div class="detail-label">判断理由</div>
+            <div class="detail-value">${this.escapeHtml(result.reason)}</div>
+        </div>
+        ` : ''}
+    `;
     }
 
     getStatusText(result) {

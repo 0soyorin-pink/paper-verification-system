@@ -744,3 +744,51 @@ footer {
         opacity: 1;
     }
 }
+
+/* 来源链接样式 */
+.source-link {
+    color: #1890ff;
+    text-decoration: none;
+    word-break: break-all;
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+    padding: 4px 8px;
+    background: #fafafa;
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.source-link:hover {
+    color: #40a9ff;
+    text-decoration: underline;
+    background: #f0f8ff;
+    border-color: #1890ff;
+}
+
+/* 详情项样式优化 */
+.detail-item {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.detail-value {
+    color: #666;
+    line-height: 1.5;
+    word-break: break-word;
+}
