@@ -23,6 +23,7 @@ your_project/
 ## 技术栈
 
 *   **Python 3.x**
+*   **LangChain**
 *   **openai** 库 (用于调用 LLM)
 *   **playwright** 库 (用于网页爬虫)
 *   **requests** 库 (用于 API 调用)
